@@ -1,0 +1,34 @@
+name:                cabal-query
+version:             0.1.0.0
+synopsis:            A simple tool to query cabal files.
+-- description:
+homepage:            https://github.com/creswick/cabal-query
+license:             Apache-2.0
+license-file:        LICENSE
+author:              Rogan Creswick
+maintainer:          creswick@gmail.com
+copyright:           2015, Rogan Creswick
+category:            Development
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.18
+
+library
+  exposed-modules:     Distribution.Query
+  -- other-modules:       
+  -- other-extensions:    
+  build-depends:       base >=4.6 && <4.7,
+                       Cabal
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+  ghc-options: -Wall
+
+executable query
+  default-language: Haskell2010
+  hs-source-dirs: tools
+  main-is: Main.hs
+
+  build-depends:       base >=4.6 && <4.7,
+                       cabal-query
+
+  ghc-options: -Wall
