@@ -1,9 +1,17 @@
 name:                cabal-query
 version:             0.1.0.0
 synopsis:            A simple tool to query cabal files.
--- description:
-homepage:            https://github.com/creswick/cabal-query
-license:             Apache-2.0
+description:         Command line access to the cabal package description
+                     files.
+                     .
+                     cabalQuery allows you to query one or more .cabal files
+                     for fields that may be useful in other contexts, such
+                     as a build system, where you may need the version number,
+                     lincense, authors, copyright, etc.. in a programatic way,
+                     but without access to the Cabal libraries.
+license:             BSD3
+homepage:            http://github.com/creswick/cabal-query
+Bug-Reports:         http://github.com/creswick/cabal-query/issues
 license-file:        LICENSE
 author:              Rogan Creswick
 maintainer:          creswick@gmail.com
