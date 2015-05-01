@@ -1,5 +1,6 @@
 module Main where
 
+import System.Directory
 import System.Environment
 import System.IO
 
@@ -8,8 +9,12 @@ import Data.List (isInfixOf, intercalate)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.String.Utils
+import Data.Version (showVersion)
 import Distribution.Query
 import Distribution.PackageDescription (GenericPackageDescription)
+
+
+import qualified Paths_cabalQuery as CQ
 
 main :: IO ()
 main = do
@@ -17,10 +22,17 @@ main = do
   eCfg <- parseArgs args
   case eCfg of
     Nothing -> printHelp
-    Just cfg | ["--help"] `isInfixOf` (options cfg) -> printHelp
+    Just cfg | ["--help"] `isInfixOf` (options cfg)    -> printHelp
+             | ["--version"] `isInfixOf` (options cfg) -> printVersion
              | otherwise -> do
       let cmds = map cmdFn $ commands cfg
-      mapM_ (query cmds) (files cfg)
+      case files cfg of
+        []       -> do putStrLn "No .cabal files specified."
+                       printHelp
+        theFiles -> mapM_ (query cmds) theFiles
+
+printVersion :: IO ()
+printVersion = putStrLn ("cabalQuery-"++ showVersion CQ.version)
 
 printHelp :: IO ()
 printHelp = do
@@ -83,11 +95,15 @@ parseArgs :: [String] -> IO (Maybe Config)
 parseArgs args = do
   let eCmds = map toCommand $ filter isCommand args
   case (lefts eCmds, rights eCmds) of
-    ([] , cmds) ->
-      return (Just (Config { files = filter isCabalFile args
-                  , options = filter isOption args
-                  , commands = cmds
-                  }))
+    ([] , cmds) -> do
+      theFiles <- case filter isCabalFile args of
+        [] -> do fs <- getCurrentDirectory >>= getDirectoryContents
+                 return (filter isCabalFile fs)
+        fs -> return fs
+      return (Just (Config { files = theFiles
+                           , options = filter isOption args
+                           , commands = cmds
+                           }))
     (errs, _) -> do
       hPutStrLn stderr "Invalid commands specified:"
       mapM_ (hPrint stderr) errs

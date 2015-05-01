@@ -1,5 +1,5 @@
 name:                cabalQuery
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            A simple tool to query cabal files.
 description:         Command line access to the cabal package description
                      files.
@@ -42,7 +42,8 @@ executable cabalQuery
 
   build-depends:       base >=4.6 && <4.7,
                        Cabal >= 1.22,
-                       cabal-query,
+                       cabalQuery,
+                       directory,
                        MissingH,
                        containers
 
