@@ -1,4 +1,4 @@
-name:                cabal-query
+name:                cabalQuery
 version:             0.1.0.0
 synopsis:            A simple tool to query cabal files.
 description:         Command line access to the cabal package description
