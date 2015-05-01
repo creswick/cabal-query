@@ -21,6 +21,10 @@ build-type:          Simple
 -- extra-source-files:
 cabal-version:       >=1.18
 
+source-repository head
+  type:     git
+  location: git://github.com/creswick/cabal-query.git
+
 library
   exposed-modules:     Distribution.Query
   build-depends:       base >=4.6 && <4.7,
