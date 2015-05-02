@@ -9,7 +9,48 @@ import Distribution.PackageDescription.Parse
 import Distribution.Text
 import Distribution.Version
 
+import Data.Map (Map)
+import qualified Data.Map as Map
+
+import System.IO
+
 import Text.PrettyPrint (render)
+
+commandMap :: Map String Command
+commandMap = Map.fromList $ map (\cmd -> (cmdName cmd, cmd)) commandList
+
+commandList :: [Command]
+commandList =
+  [ Command "numeric-version"
+      "Returns the numeric version in a machine-readable fashion." numericVersion
+  , Command "version" "An alias for numeric-version" numericVersion
+  , Command "name"  "The package name." name
+  , Command "license" "The package license." license
+  , Command "copyright" "The package copyright." copyright
+  , Command "homepage" "The package homepage." homepage
+  , Command "pkgUrl" "The package url." pkgUrl
+  , Command "bugReports" "The bug reporting url." bugReports
+  , Command "synopsis" "The package synopsis." synopsis
+  , Command "description" "The package description." description
+  , Command "buildType" "The buildType." buildType
+  , Command "dataDir" "The dataDir." dataDir
+  ]
+
+data Command = Command { cmdName :: String
+                         -- ^ The name of the command, as written on the command line.
+                       , cmdDesc :: String
+                         -- ^ A description of the command, for help output.
+                       , cmdFn :: GenericPackageDescription -> String
+                         -- ^ The function over a package description
+                         -- to get the string value of the thing we're requesting.
+                       }
+
+query :: [GenericPackageDescription -> String] -> FilePath -> IO ()
+query cmds file = do
+  eGpb <- loadDescr file
+  case eGpb of
+    Left  err -> hPrint stderr err
+    Right gpb -> putStrLn $ intercalate ", " (map ($ gpb) cmds)
 
 loadDescr :: FilePath -> IO (Either String GenericPackageDescription)
 loadDescr cabalFile = do

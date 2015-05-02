@@ -1,5 +1,5 @@
 name:                cabalQuery
-version:             0.1.0.1
+version:             0.1.0.2
 synopsis:            A simple tool to query cabal files.
 description:         Command line access to the cabal package description
                      files.
@@ -27,8 +27,9 @@ source-repository head
 
 library
   exposed-modules:     Distribution.Query
-  build-depends:       base >=4.6 && <4.7,
+  build-depends:       base >=4.6 && <6,
                        Cabal >= 1.22,
+                       containers,
                        pretty
 
   hs-source-dirs:      src
@@ -40,7 +41,7 @@ executable cabalQuery
   hs-source-dirs: tools
   main-is: Main.hs
 
-  build-depends:       base >=4.6 && <4.7,
+  build-depends:       base >=4.6 && <= 6,
                        Cabal >= 1.22,
                        cabalQuery,
                        directory,
@@ -48,3 +49,19 @@ executable cabalQuery
                        containers
 
   ghc-options: -Wall
+
+
+test-suite tests
+   default-language: Haskell2010
+   type: exitcode-stdio-1.0
+
+   Main-Is:          Main.hs
+   hs-source-dirs:   tests/src
+
+   Build-depends:    cabalQuery,
+                     base       >= 4.6 && <= 6,
+                     tasty,
+                     tasty-hunit,
+                     tasty-ant-xml
+
+   ghc-options:      -Wall -auto-all -caf-all
